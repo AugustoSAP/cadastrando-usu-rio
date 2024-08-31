@@ -6,11 +6,13 @@ const prisma = new PrismaClient()
 const app = express()
 
 app.use(express.json())
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors(
+    {
+        origin: '*',
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization']
+    }    
+));
 
 app.get('/usuarios', async (req, res) => {
     try {
@@ -22,6 +24,8 @@ app.get('/usuarios', async (req, res) => {
 })
 
 app.post('/usuarios', async (req, res) => {
+    console.log("Requisição recebida", req.body); 
+
     try {
         const user = await prisma.user.create({
             data: {
@@ -35,6 +39,7 @@ app.post('/usuarios', async (req, res) => {
         res.status(500).json({ error: "Erro ao criar usuário." })
     }
 })
+
 
 app.put('/usuarios/:id', async (req, res) => {
     try {
@@ -54,23 +59,18 @@ app.put('/usuarios/:id', async (req, res) => {
 })
 
 app.delete('/usuarios/:id', async (req, res) => {
-    try {
-        const userId = parseInt(req.params.id, 10); // Conversão de ID para inteiro
-        await prisma.user.delete({
-            where: { id: userId }
-        })
-        res.status(200).json({ message: "Usuário deletado com sucesso!" })
-    } catch (error) {
-        res.status(500).json({ error: "Erro ao deletar usuário." })
-    }
-})
+    await prisma.user.delete({
+        where:{
+            id:req.params.id
+        }
+    })
+
+    res.status(200).json({mensgae: "deletado"})
+  
+});
+
 
 app.listen(3000, () => {
     console.log("Servidor rodando na porta 3000")
 })
 
-
-//acesso a o BD
-
-//augusto
-//E9TiXVEt2ubU6Ct
